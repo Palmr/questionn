@@ -1,0 +1,2 @@
+name:      "all_order_books"
+queryText: "select * from tfx_instrument.order_book"

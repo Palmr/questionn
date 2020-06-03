@@ -1,0 +1,5 @@
+name:           "susan"
+title:          "Show All Complicated Things"
+description:    "I will find you all the orderbooks/instruments (what even is this thing?) maybe matching an asset"
+dataSourceName: "local alldb"
+queryName:      "all_instruments_for_optional_asset"

@@ -1,0 +1,7 @@
+server:
+  port: 5050
+  isDevelopment: true
+db:
+  databaseUrl: jdbc:h2:/tmp/questionn;mode=mysql
+  username: questionn
+  password: ""
