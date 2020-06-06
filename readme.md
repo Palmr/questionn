@@ -1,4 +1,4 @@
-# Questionn
+# Questionn [![Build Status](https://travis-ci.org/Palmr/questionn.svg?branch=master)](https://travis-ci.org/Palmr/questionn)
 
 The n stands for knowledge
 
