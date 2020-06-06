@@ -14,24 +14,24 @@ repositories {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.30'
-    compile 'ch.qos.logback:logback-classic:1.2.3'
-    compile 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
 
-    compile 'org.flywaydb:flyway-core:6.4.3'
-    compile 'org.jdbi:jdbi3-core:3.13.0'
-    compile 'com.h2database:h2:1.4.200'
-    compile 'mysql:mysql-connector-java:8.0.20'
+    implementation 'org.flywaydb:flyway-core:6.4.3'
+    implementation 'org.jdbi:jdbi3-core:3.13.0'
+    implementation 'com.h2database:h2:1.4.200'
+    implementation 'mysql:mysql-connector-java:8.0.20'
 
-    compile 'org.yaml:snakeyaml:1.26'
-    compile group: 'com.github.spullara.mustache.java',  name:'compiler', version: '0.9.6'
+    implementation 'org.yaml:snakeyaml:1.26'
+    implementation group: 'com.github.spullara.mustache.java',  name:'compiler', version: '0.9.6'
 
-    compile ratpack.dependency("hikari")
-    compile ratpack.dependency("dropwizard-metrics")
+    implementation ratpack.dependency("hikari")
+    implementation ratpack.dependency("dropwizard-metrics")
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
     testImplementation('org.hamcrest:hamcrest-library:2.2')
-    testCompile group: 'org.seleniumhq.selenium',  name:'selenium-java', version: '3.141.59'
+    testImplementation group: 'org.seleniumhq.selenium',  name:'selenium-java', version: '3.141.59'
 }
 
 mainClassName = 'com.lmax.questionn.QuestionnMain'
