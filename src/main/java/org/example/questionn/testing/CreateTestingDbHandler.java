@@ -6,10 +6,12 @@ import ratpack.http.Status;
 
 import static ratpack.jackson.Jackson.fromJson;
 
-public class CreateTestingDbHandler implements Handler {
+public class CreateTestingDbHandler implements Handler
+{
 
     @Override
-    public void handle(Context ctx) {
+    public void handle(Context ctx)
+    {
         ctx.parse(fromJson(CreateTestingDbRequest.class))
                 .then(createTokenRequest -> ctx.get(TestingDbService.class).createDbEntry(ctx, createTokenRequest)
                         .then(tokenId -> {

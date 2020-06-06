@@ -4,9 +4,11 @@ import ratpack.handling.Context;
 import ratpack.handling.Handler;
 import ratpack.jackson.Jackson;
 
-public class GetAllTestingDbHandler implements Handler {
+public class GetAllTestingDbHandler implements Handler
+{
     @Override
-    public void handle(Context ctx) {
+    public void handle(Context ctx)
+    {
         ctx.get(TestingDbService.class).getAllDbEntries(ctx)
                 .map(Jackson::json)
                 .then(ctx::render);

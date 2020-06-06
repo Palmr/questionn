@@ -9,16 +9,18 @@ public final class Query
     public String queryText;
     public List<QueryParameter> queryParameters;
 
-    public List<QueryParameter> getQueryParameters() {
+    public List<QueryParameter> getQueryParameters()
+    {
         return queryParameters == null ? Collections.emptyList() : queryParameters;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Query{" +
-                "name='" + name + '\'' +
-                ", queryText='" + queryText + '\'' +
-                ", queryParameters=" + queryParameters +
-                '}';
+               "name='" + name + '\'' +
+               ", queryText='" + queryText + '\'' +
+               ", queryParameters=" + queryParameters +
+               '}';
     }
 }

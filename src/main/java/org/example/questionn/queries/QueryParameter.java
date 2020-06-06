@@ -9,13 +9,14 @@ public final class QueryParameter
     public boolean optional;
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "QueryParameter{" +
-                "name='" + name + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", type='" + type + '\'' +
-                ", generator='" + generator + '\'' +
-                ", optional=" + optional +
-                '}';
+               "name='" + name + '\'' +
+               ", displayName='" + displayName + '\'' +
+               ", type='" + type + '\'' +
+               ", generator='" + generator + '\'' +
+               ", optional=" + optional +
+               '}';
     }
 }

@@ -1,6 +1,7 @@
 package org.example.questionn.answers;
 
-public class Answer {
+public class Answer
+{
     public String name;
     public String title;
     public String description;
