@@ -40,3 +40,11 @@ flyway {
     url = 'jdbc:h2:file:/tmp/questionn;mode=mysql'
     user = 'questionn'
 }
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
