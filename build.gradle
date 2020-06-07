@@ -34,7 +34,7 @@ dependencies {
     testImplementation group: 'org.seleniumhq.selenium',  name:'selenium-java', version: '3.141.59'
 }
 
-mainClassName = 'com.lmax.questionn.QuestionnMain'
+mainClassName = 'org.example.questionn.QuestionnMain'
 
 flyway {
     url = 'jdbc:h2:file:/tmp/questionn;mode=mysql'
