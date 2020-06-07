@@ -9,8 +9,9 @@ public class GetAllAnswersHandler implements Handler
     @Override
     public void handle(Context ctx)
     {
-        ctx.get(AnswerService.class).getAllAnswers()
-                .map(Jackson::json)
-                .then(ctx::render);
+        ctx.get(AnswerService.class)
+            .getAllAnswers()
+            .map(Jackson::json)
+            .then(ctx::render);
     }
 }
