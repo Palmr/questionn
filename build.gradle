@@ -2,8 +2,10 @@ plugins {
     id 'java'
     id 'idea'
     id 'checkstyle'
-    id 'io.ratpack.ratpack-java' version('1.8.0')
-    id "org.flywaydb.flyway" version "6.4.3"
+    id 'io.ratpack.ratpack-java' version '1.8.0'
+    id 'org.flywaydb.flyway' version '6.4.3'
+    id 'com.github.spotbugs' version '4.3.0'
+    id 'org.checkerframework' version '0.5.4'
 }
 
 group 'org.example'
@@ -11,6 +13,10 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+spotbugs {
+    excludeFilter = file("config/spotbugs/exclude.xml")
 }
 
 dependencies {

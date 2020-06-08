@@ -1,0 +1,6 @@
+<FindBugsFilter>
+    <!-- JDK 11 onwards does weird things with this -->
+    <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+    </Match>
+</FindBugsFilter>

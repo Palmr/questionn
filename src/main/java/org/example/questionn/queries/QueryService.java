@@ -1,8 +1,8 @@
 package org.example.questionn.queries;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -20,17 +20,20 @@ public class QueryService
 
     public void load(final Path baseDir, final Yaml yaml) throws IOException
     {
-        Files.newDirectoryStream(baseDir.resolve("data/queries")).forEach(answerFile -> {
-            try
-            {
-                final Query query = yaml.loadAs(new FileInputStream(answerFile.toFile()), Query.class);
-                queries.put(query.name, query);
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-        });
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/queries")))
+        {
+            paths.forEach(answerFile -> {
+                try (final FileInputStream input = new FileInputStream(answerFile.toFile()))
+                {
+                    final Query query = yaml.loadAs(input, Query.class);
+                    queries.put(query.name, query);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     public void registerEntries(final RegistrySpec registrySpec)

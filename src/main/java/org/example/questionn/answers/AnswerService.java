@@ -1,8 +1,8 @@
 package org.example.questionn.answers;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -24,17 +24,20 @@ public class AnswerService
 
     public void load(final Path baseDir, final Yaml yaml) throws IOException
     {
-        Files.newDirectoryStream(baseDir.resolve("data/answers")).forEach(answerFile -> {
-            try
-            {
-                final Answer answer = yaml.loadAs(new FileInputStream(answerFile.toFile()), Answer.class);
-                answers.put(answer.name, answer);
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-        });
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/answers")))
+        {
+            paths.forEach(answerFile -> {
+                try (final FileInputStream input = new FileInputStream(answerFile.toFile()))
+                {
+                    final Answer answer = yaml.loadAs(input, Answer.class);
+                    answers.put(answer.name, answer);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     public void registerEntries(final RegistrySpec registrySpec)
