@@ -3,4 +3,9 @@
     <Match>
         <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
     </Match>
+
+    <!-- Todo: remove this once we work out why it's throwing false-positives in JDK 8 -->
+    <Match>
+        <Bug pattern="OBL_UNSATISFIED_OBLIGATION" />
+    </Match>
 </FindBugsFilter>
