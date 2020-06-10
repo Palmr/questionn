@@ -18,9 +18,9 @@ import org.example.questionn.testing.CreateTestingDbHandler;
 import org.example.questionn.testing.GetAllTestingDbHandler;
 import org.example.questionn.testing.GetTestingDbHandler;
 import org.example.questionn.testing.TestingDbService;
-import org.yaml.snakeyaml.Yaml;
 
 
+import org.example.questionn.yaml.YamlLoader;
 import ratpack.guice.Guice;
 import ratpack.handling.RequestLogger;
 import ratpack.http.MutableHeaders;
@@ -32,13 +32,10 @@ public class QuestionnMain
     public static void main(String... args) throws Exception
     {
         final Path baseDir = BaseDir.find();
-        Yaml yaml = new Yaml();
+        final YamlLoader yamlLoader = YamlLoader.newInstance();
 
-        AnswerService answerService = new AnswerService();
-        answerService.load(baseDir, yaml);
-
-        QueryService queryService = new QueryService();
-        queryService.load(baseDir, yaml);
+        final AnswerService answerService = AnswerService.load(baseDir, yamlLoader);
+        final QueryService queryService = QueryService.load(baseDir, yamlLoader);
 
         RatpackServer.start(server -> server
                         .serverConfig(c -> c
