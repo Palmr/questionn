@@ -21,8 +21,8 @@ public final class AnswerService
 {
     private final Map<String, Answer> answers;
 
-    private AnswerService(Map<String, Answer> answers) {
-
+    private AnswerService(Map<String, Answer> answers)
+    {
         this.answers = answers;
     }
 
@@ -31,8 +31,10 @@ public final class AnswerService
         final YamlLoader yaml) throws IOException
     {
         final Map<String, Answer> answers = new HashMap<>();
-        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/answers"))) {
-            for (Path path : paths) {
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/answers")))
+        {
+            for (Path path : paths)
+            {
                 final Answer answer = yaml.load(path, Answer.class);
                 answers.put(answer.name, answer);
             }

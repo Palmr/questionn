@@ -17,14 +17,18 @@ public final class QueryService
 {
     private final Map<String, Query> queries;
 
-    private QueryService(Map<String, Query> queries) {
+    private QueryService(Map<String, Query> queries)
+    {
         this.queries = queries;
     }
 
-    public static QueryService load(final Path baseDir, final YamlLoader yaml) throws IOException {
+    public static QueryService load(final Path baseDir, final YamlLoader yaml) throws IOException
+    {
         final Map<String, Query> queries = new HashMap<>();
-        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/queries"))) {
-            for (Path path : paths) {
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/queries")))
+        {
+            for (Path path : paths)
+            {
                 final Query query = yaml.load(path, Query.class);
                 queries.put(query.name, query);
             }
