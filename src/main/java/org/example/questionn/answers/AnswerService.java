@@ -31,7 +31,7 @@ public final class AnswerService
         final YamlLoader yaml) throws IOException
     {
         final Map<String, Answer> answers = new HashMap<>();
-        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/answers")))
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("answers")))
         {
             for (Path path : paths)
             {

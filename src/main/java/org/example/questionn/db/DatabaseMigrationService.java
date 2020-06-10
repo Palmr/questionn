@@ -13,8 +13,9 @@ public class DatabaseMigrationService implements Service
     @Override
     public void onStart(final StartEvent event)
     {
+        DataSource dataSource = event.getRegistry().get(DataSource.class);
         Flyway.configure()
-                .dataSource(event.getRegistry().get(DataSource.class))
+                .dataSource(dataSource)
                 .load()
                 .migrate();
     }

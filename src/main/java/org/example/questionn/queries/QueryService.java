@@ -25,7 +25,7 @@ public final class QueryService
     public static QueryService load(final Path baseDir, final YamlLoader yaml) throws IOException
     {
         final Map<String, Query> queries = new HashMap<>();
-        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("data/queries")))
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(baseDir.resolve("queries")))
         {
             for (Path path : paths)
             {

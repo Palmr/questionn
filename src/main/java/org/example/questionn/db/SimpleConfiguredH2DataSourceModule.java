@@ -13,6 +13,13 @@ import ratpack.guice.ConfigurableModule;
 
 public class SimpleConfiguredH2DataSourceModule extends ConfigurableModule<DatabaseConfig>
 {
+    private final DatabaseConfig questionnDatabase;
+
+    public SimpleConfiguredH2DataSourceModule(DatabaseConfig questionnDatabase)
+    {
+        this.questionnDatabase = questionnDatabase;
+    }
+
     @Override
     protected void configure()
     {
@@ -20,15 +27,15 @@ public class SimpleConfiguredH2DataSourceModule extends ConfigurableModule<Datab
 
     @Provides
     @Singleton
-    public DataSource dataSource(DatabaseConfig config)
+    public DataSource dataSource()
     {
-        return JdbcConnectionPool.create(config.databaseUrl, config.username, config.password);
+        return JdbcConnectionPool.create(questionnDatabase.url, questionnDatabase.username, questionnDatabase.password);
     }
 
     @Provides
     @Singleton
-    public Jdbi jdbi(DatabaseConfig config)
+    public Jdbi jdbi()
     {
-        return Jdbi.create(dataSource(config));
+        return Jdbi.create(dataSource());
     }
 }

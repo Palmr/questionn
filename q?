@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -eou pipefail
+
+COMMAND=$1
+
+case $COMMAND in
+  start-up)
+    CONFIG=`readlink -f server_configuration.yaml`
+    ./gradlew run --args="-c $CONFIG"
+  ;;
+
+  *)
+    echo "gtfo"
+  ;;
+esac
+
+
+
+
+
