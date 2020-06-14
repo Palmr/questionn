@@ -1,5 +1,0 @@
-name:           "geoff"
-title:          "Show All Instruments"
-description:    "I will find you all the instruments"
-dataSourceName: "local alldb"
-queryName:      "all_instruments"

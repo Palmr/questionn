@@ -1,6 +1,0 @@
-name:      "all_instruments"
-queryText: "select * from tfx_instrument.instrument where asset_class=:asset_class"
-queryParameters:
-  - name: "asset_class"
-    type: "string"
-    generator: "select distinct asset_class from tfx_instrument.instrument"

@@ -1,5 +1,0 @@
-name:           "fred"
-title:          "Show All Order Books"
-description:    "I will find you all the order books"
-dataSourceName: "local alldb"
-queryName:      "all_order_books"
