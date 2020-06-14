@@ -1,0 +1,5 @@
+name:           "sales_total"
+title:          "Show Sales Total"
+description:    "Shows the total cash value of all sales across all time"
+dataSourceName: "shopp"
+queryName:      "sales_total"

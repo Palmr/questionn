@@ -19,10 +19,15 @@ If "doing it right" we should probably have a little more testing on the go than
  - [ ] Sort out where the YAML goes
  - [ ] Parse all the YAML again
  - [ ] Get runnable answers again
+   - [x] First answer acceptance test
+   - [ ] Answers with different result shapes
+   - [ ] Answers with query parameters
+   - [ ] Work out if answers are really distinct from queries
+ - [ ] Work out how to completely evict all traces of Guice
  - [ ] Add working vue front end
  - [ ] Bring back the selenium tests?
  - [ ] ...have some tests
- - [ ] Probably some of the config, e.g. datasources should live outside yaml?
+ - [x] Probably some of the config, e.g. datasources should live outside yaml?
  - [ ] What was reading from a security.properties should probably be a security.yaml
  - [ ] Dashboards
  - [ ] Query Building

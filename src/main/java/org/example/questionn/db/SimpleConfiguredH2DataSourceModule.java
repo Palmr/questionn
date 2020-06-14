@@ -15,9 +15,9 @@ public class SimpleConfiguredH2DataSourceModule extends ConfigurableModule<Datab
 {
     private final DatabaseConfig questionnDatabase;
 
-    public SimpleConfiguredH2DataSourceModule(DatabaseConfig questionnDatabase)
+    public SimpleConfiguredH2DataSourceModule(DatabaseConfig databaseConfig)
     {
-        this.questionnDatabase = questionnDatabase;
+        this.questionnDatabase = databaseConfig;
     }
 
     @Override

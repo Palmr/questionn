@@ -1,0 +1,2 @@
+name:      "sales_total"
+queryText: "select sum(product_price * product_quantity) from checkout_entry"

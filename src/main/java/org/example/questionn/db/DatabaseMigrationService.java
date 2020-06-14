@@ -16,6 +16,7 @@ public class DatabaseMigrationService implements Service
         DataSource dataSource = event.getRegistry().get(DataSource.class);
         Flyway.configure()
                 .dataSource(dataSource)
+                .schemas("questionn")
                 .load()
                 .migrate();
     }
