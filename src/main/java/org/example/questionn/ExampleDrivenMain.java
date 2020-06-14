@@ -80,7 +80,9 @@ public class ExampleDrivenMain
         }
     }
 
-    @SuppressFBWarnings(value = "DMI_EMPTY_DB_PASSWORD", justification = "This is only used to run examples")
+    @SuppressFBWarnings(
+            value = { "DMI_EMPTY_DB_PASSWORD", "SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" },
+            justification = "This is only used to run examples")
     static Example startExample(
             final String databaseRootPath,
             final String exampleDirectoryName) throws Exception
