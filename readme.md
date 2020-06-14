@@ -4,7 +4,7 @@ The n stands for knowledge
 
 ## Current State
 
-Old hacky code is in the old-hacky branch.
+Old hacky code is in the old-hacky branch. New hacky code is on master.
 
 This is a shell of a ratpack service.
 Compared to before this has nice routing and config handling, and some nice jdbc-bits.
