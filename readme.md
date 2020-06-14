@@ -23,12 +23,18 @@ If "doing it right" we should probably have a little more testing on the go than
    - [ ] Answers with different result shapes
    - [ ] Answers with query parameters
    - [ ] Work out if answers are really distinct from queries
+   - [ ] Can we avoid having the entire ResultSet in memory?
  - [ ] Work out how to completely evict all traces of Guice
  - [ ] Add working vue front end
  - [ ] Bring back the selenium tests?
  - [ ] ...have some tests
  - [x] Probably some of the config, e.g. datasources should live outside yaml?
- - [ ] What was reading from a security.properties should probably be a security.yaml
+ - [x] What was reading from a security.properties should probably be a security.yaml
+ - [ ] Observability
+   - [ ] What answers are in use?
+   - [ ] By whom?
+   - [ ] When?
+   - [ ] With what parameters?
  - [ ] Dashboards
  - [ ] Query Building
  - [ ] Error Handling
