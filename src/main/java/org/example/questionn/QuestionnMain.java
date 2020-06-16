@@ -1,13 +1,23 @@
 package org.example.questionn;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+
+import io.netty.buffer.ByteBuf;
+
+
+import io.netty.buffer.PooledByteBufAllocator;
+
 
 import org.example.questionn.answers.AnswerService;
 import org.example.questionn.answers.ExecuteAnswerHandler;
@@ -26,11 +36,18 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+
+
 import ratpack.guice.Guice;
+import ratpack.handling.Context;
 import ratpack.handling.RequestLogger;
 import ratpack.http.MutableHeaders;
+import ratpack.http.Response;
+import ratpack.render.RendererSupport;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
+import ratpack.stream.Streams;
+import ratpack.stream.TransformablePublisher;
 
 public class QuestionnMain
 {
@@ -78,6 +95,7 @@ public class QuestionnMain
                 )
                 .registry(Guice.registry(b -> b
                     .module(new SimpleConfiguredH2DataSourceModule(serverConfiguration.questionnDatabase))
+                    .add(new CsvRenderer())
                     .add(new DatabaseMigrationService())
                     .add(new ObjectMapper()
                         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
@@ -119,5 +137,29 @@ public class QuestionnMain
                             .files(f -> f.dir("web").indexFiles("index.html"))
                 )
         );
+    }
+
+    public static class CsvRenderer extends RendererSupport<Csv>
+    {
+        @Override
+        public void render(final Context ctx, final Csv csv)
+        {
+            Response response = ctx.getResponse();
+            response.getHeaders().add("Content-Type", "text/csv");
+            TransformablePublisher<ByteBuf> values = Streams.publish(csv.records())
+                    .map(r -> {
+                        final ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.buffer();
+                        final String str = "\n" + String.join(",", r);
+                        byteBuf.writeBytes(str.getBytes(StandardCharsets.UTF_8));
+
+                        return byteBuf;
+                    });
+            String join = String.join(",", csv.fieldNames());
+            final ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.buffer();
+            byteBuf.writeBytes(join.getBytes(StandardCharsets.UTF_8));
+            TransformablePublisher<ByteBuf> header = Streams.publish(Collections.singletonList(byteBuf));
+
+            response.sendStream(Streams.concat(Arrays.asList(header, values)));
+        }
     }
 }

@@ -3,6 +3,7 @@ package org.example.questionn;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -48,25 +49,42 @@ public class ExampleDrivenAcceptanceTest
     @Test
     public void queryTotalSales() throws IOException
     {
-        String result = post("http://localhost:8081/api/answers/sales_total", "");
+        String result = post("http://localhost:8081/api/answers/sales_total");
         assertThat(result, containsString("12.72"));
     }
 
     @Test
     public void queryTotalSalesByCustomer() throws IOException
     {
-        String result = post("http://localhost:8081/api/answers/sales_total_by_customer", "");
+        String result = post("http://localhost:8081/api/answers/sales_total_by_customer");
         assertThat(result, containsString("\"Alice Brown\",\"5.34\""));
     }
 
-    @SuppressWarnings("SameParameterValue")
-    String post(String url, String json) throws IOException
+    @Test
+    public void queryTotalSalesByCustomerAsCsv() throws IOException
     {
-        RequestBody body = RequestBody.create(json, JSON);
-        Request request = new Request.Builder()
+        String result = post("http://localhost:8081/api/answers/sales_total_by_customer",
+                r -> r.header("Accept", "text/csv"));
+        assertThat(result, containsString(
+                "CUSTOMER_NAME,SALES_TOTAL\n" +
+                "Alice Brown,5.34\n" +
+                "Chris Dickinson,5.88\n" +
+                "Gareth Hughes,1.50"
+        ));
+    }
+
+    String post(String url) throws IOException
+    {
+        return post(url, r -> r);
+    }
+
+    String post(String url, Function<Request.Builder, Request.Builder> decorator) throws IOException
+    {
+        RequestBody body = RequestBody.create("", JSON);
+        Request.Builder post = new Request.Builder()
                 .url(url)
-                .post(body)
-                .build();
+                .post(body);
+        Request request = decorator.apply(post).build();
         try (Response response = client.newCall(request).execute())
         {
             return Objects.requireNonNull(response.body()).string();
