@@ -4,14 +4,18 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.example.questionn.answers.GetAllAnswersHandler;
 import org.example.questionn.yaml.YamlLoader;
 import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.result.ResultIterable;
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel;
 
 
@@ -51,9 +55,79 @@ public final class QueryService
         Query query = queries.get(queryName);
 
         return jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, (HandleCallback<QueryResult, Exception>)handle -> {
-            ResultIterable<Double> jdbiQuery = handle.createQuery(query.queryText).mapTo(Double.class);
+            org.jdbi.v3.core.statement.Query q = handle.createQuery(query.queryText);
+            return q.execute((statementSupplier, ctx) -> {
+                ResultSet resultSet = statementSupplier.get().executeQuery();
 
-            return new QueryResult(jdbiQuery.findFirst().orElseThrow(() -> new RuntimeException("I just want my first test to pass :-(")));
+                return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
+            });
         });
+    }
+
+    private List<DataRow> dataRows(ResultSet resultSet) throws SQLException
+    {
+        final List<DataRow> rows = new ArrayList<>();
+
+        resultSet.beforeFirst();
+        while (resultSet.next())
+        {
+            rows.add(dataRow(resultSet));
+        }
+
+        return rows;
+    }
+
+    private DataRow dataRow(ResultSet resultSet) throws SQLException
+    {
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        final String[] values = new String[columnCount];
+
+        for (int i = 0; i < columnCount; i++)
+        {
+            values[i]  = resultSet.getString(i + 1);
+        }
+
+        return new DataRow(values);
+    }
+
+    private MetadataRow metadataRow(ResultSetMetaData metaData) throws SQLException
+    {
+        final int columnCount = metaData.getColumnCount();
+        final String[] columnNames = new String[columnCount];
+        final String[] columnTypes = new String[columnCount];
+        for (int i = 0; i < columnCount; i++)
+        {
+            columnNames[i] = metaData.getColumnName(i + 1);
+            columnTypes[i] = metaData.getColumnTypeName(i + 1);
+        }
+
+        return new MetadataRow(columnNames, columnTypes);
+    }
+
+    public interface DatabaseRow
+    {
+
+    }
+
+    public static final class MetadataRow implements DatabaseRow
+    {
+        public final String[] fieldNames;
+        public final String[] fieldTypes;
+
+        public MetadataRow(final String[] fieldNames, final String[] fieldTypes)
+        {
+            this.fieldNames = fieldNames;
+            this.fieldTypes = fieldTypes;
+        }
+    }
+
+    public static final class DataRow implements DatabaseRow
+    {
+        public final String[] fields;
+
+        public DataRow(final String[] fields)
+        {
+            this.fields = fields;
+        }
     }
 }

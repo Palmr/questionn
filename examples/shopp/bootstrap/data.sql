@@ -20,7 +20,7 @@ insert into shopp.checkout (checkout_id, customer_id, checkout_time) values
     ( 1, 2, '2020-06-13 14:55:06'),
     ( 2, 2, '2020-06-13 15:42:11'),
     ( 3, 4, '2020-06-14 09:15:33'),
-    ( 4, 6, '2020-06-15 11:19:41');
+    ( 4, 1, '2020-06-15 11:19:41');
 
 insert into shopp.checkout_entry (checkout_id, product_id, product_price, product_quantity) values
     ( 1, 4, 1.23, 1 ),

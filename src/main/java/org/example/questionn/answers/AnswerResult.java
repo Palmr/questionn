@@ -1,11 +1,19 @@
 package org.example.questionn.answers;
 
+import org.example.questionn.queries.QueryService;
+
+import java.util.List;
+
 public class AnswerResult
 {
-    public final Double num;
+    public final QueryService.MetadataRow metadataRow;
+    public final List<QueryService.DataRow> dataRows;
 
-    public AnswerResult(Double num)
+    public AnswerResult(
+            QueryService.MetadataRow metadataRow,
+            List<QueryService.DataRow> dataRows)
     {
-        this.num = num;
+        this.metadataRow = metadataRow;
+        this.dataRows = dataRows;
     }
 }

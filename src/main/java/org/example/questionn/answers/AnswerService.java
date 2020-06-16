@@ -79,7 +79,7 @@ public final class AnswerService
             final Answer answer = this.answers.get(answerName);
 
             QueryResult r = queryService.runQuery(answer.queryName, jdbiService.jdbi(answer.dataSourceName));
-            AnswerResult ar = new AnswerResult(r.num);
+            AnswerResult ar = new AnswerResult(r.metadataRow, r.dataRows);
 
             downstream.accept(Result.success(ar));
         });

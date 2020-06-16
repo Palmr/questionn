@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -25,24 +25,23 @@ public class ExampleDrivenAcceptanceTest
             = MediaType.get("application/json; charset=utf-8");
     private final OkHttpClient client = new OkHttpClient();
 
-    @TempDir
-    File databaseRoot;
+    static @TempDir File databaseRoot;
 
-    private ExampleDrivenMain.Example example;
+    private static ExampleDrivenMain.Example example;
 
-    @BeforeEach
-    public void startH2() throws Exception
+    @BeforeAll
+    public static void startH2() throws Exception
     {
         final String databaseRootPath = databaseRoot.getAbsolutePath();
         example = ExampleDrivenMain.startExample(databaseRootPath, "shopp");
     }
 
-    @AfterEach
-    void stopH2() throws Exception
+    @AfterAll
+    public static void stopH2() throws Exception
     {
-        if (this.example != null)
+        if (example != null)
         {
-            this.example.stop();
+            example.stop();
         }
     }
 
@@ -51,6 +50,13 @@ public class ExampleDrivenAcceptanceTest
     {
         String result = post("http://localhost:8081/api/answers/sales_total", "");
         assertThat(result, containsString("12.72"));
+    }
+
+    @Test
+    public void queryTotalSalesByCustomer() throws IOException
+    {
+        String result = post("http://localhost:8081/api/answers/sales_total_by_customer", "");
+        assertThat(result, containsString("\"Alice Brown\",\"5.34\""));
     }
 
     @SuppressWarnings("SameParameterValue")

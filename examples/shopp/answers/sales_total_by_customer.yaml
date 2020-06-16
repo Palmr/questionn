@@ -1,0 +1,5 @@
+name:           "sales_total_by_customer"
+title:          "Show Sales Total By Customer"
+description:    "Shows the total cash value of all sales across all time, per customer"
+dataSourceName: "shopp"
+queryName:      "sales_total_by_customer"
