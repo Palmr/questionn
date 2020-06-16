@@ -9,9 +9,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+
 import org.example.questionn.answers.AnswerService;
 import org.example.questionn.answers.ExecuteAnswerHandler;
 import org.example.questionn.answers.GetAllAnswersHandler;
+import org.example.questionn.csv.CsvRenderer;
 import org.example.questionn.db.DatabaseMigrationService;
 import org.example.questionn.db.SimpleConfiguredH2DataSourceModule;
 import org.example.questionn.queries.QueryService;
@@ -26,6 +28,8 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+
+
 import ratpack.guice.Guice;
 import ratpack.handling.RequestLogger;
 import ratpack.http.MutableHeaders;
@@ -78,6 +82,7 @@ public class QuestionnMain
                 )
                 .registry(Guice.registry(b -> b
                     .module(new SimpleConfiguredH2DataSourceModule(serverConfiguration.questionnDatabase))
+                    .add(new CsvRenderer())
                     .add(new DatabaseMigrationService())
                     .add(new ObjectMapper()
                         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
@@ -120,4 +125,5 @@ public class QuestionnMain
                 )
         );
     }
+
 }
