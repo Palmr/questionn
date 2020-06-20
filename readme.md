@@ -20,10 +20,12 @@ If "doing it right" we should probably have a little more testing on the go than
  - [ ] Parse all the YAML again
  - [ ] Get runnable answers again
    - [x] First answer acceptance test
-   - [ ] Answers with different result shapes
+   - [x] Answers with different result shapes
    - [ ] Answers with query parameters
    - [ ] Work out if answers are really distinct from queries
    - [ ] Can we avoid having the entire ResultSet in memory?
+   - [ ] Can we avoid having the entire response text in memory?
+ - [ ] Provide a slightly more standards compliant csv   
  - [ ] Work out how to completely evict all traces of Guice
  - [ ] Add working vue front end
  - [ ] Bring back the selenium tests?
