@@ -1,0 +1,10 @@
+name:      "top_k_customers"
+queryText: "
+  select c.customer_name, sum(product_price * product_quantity) as sales_total
+  from checkout_entry ce
+  join checkout ch on ce.checkout_id = ch.checkout_id
+  join customer c on ch.customer_id = c.customer_id
+  group by c.customer_name
+  order by sales_total desc
+  limit :limit
+"

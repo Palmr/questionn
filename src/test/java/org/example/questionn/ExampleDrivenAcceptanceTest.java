@@ -64,7 +64,7 @@ public class ExampleDrivenAcceptanceTest
     public void queryTotalSalesByCustomerAsCsv() throws IOException
     {
         String result = post("http://localhost:8081/api/answers/sales_total_by_customer",
-                r -> r.header("Accept", "text/csv"));
+                r -> r.header("Accept", "text/csv"), "{}");
         assertThat(result, containsString(
                 "CUSTOMER_NAME,SALES_TOTAL\n" +
                 "Alice Brown,5.34\n" +
@@ -73,18 +73,33 @@ public class ExampleDrivenAcceptanceTest
         ));
     }
 
-    String post(String url) throws IOException
+    @Test
+    public void queryTopCustomers() throws IOException
     {
-        return post(url, r -> r);
+        String result = post("http://localhost:8081/api/answers/top_k_customers",
+                r -> r.header("Accept", "text/csv"), "{ \"limit\": 2 }");
+        assertThat(result, containsString(
+                "CUSTOMER_NAME,SALES_TOTAL\n" +
+                "Chris Dickinson,5.88\n" +
+                "Alice Brown,5.34"
+        ));
     }
 
-    String post(String url, Function<Request.Builder, Request.Builder> decorator) throws IOException
+    String post(String url) throws IOException
     {
-        RequestBody body = RequestBody.create("", JSON);
-        Request.Builder post = new Request.Builder()
+        return post(url, r -> r, "{}");
+    }
+
+    String post(
+            String url,
+            Function<Request.Builder, Request.Builder> decorator,
+            String body
+    ) throws IOException
+    {
+        final Request.Builder post = new Request.Builder()
                 .url(url)
-                .post(body);
-        Request request = decorator.apply(post).build();
+                .post(RequestBody.create(body, JSON));
+        final Request request = decorator.apply(post).build();
         try (Response response = client.newCall(request).execute())
         {
             return Objects.requireNonNull(response.body()).string();

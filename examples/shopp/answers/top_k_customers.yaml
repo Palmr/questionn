@@ -1,0 +1,5 @@
+name:           "top_k_customers"
+title:          "The top customers of our shopp"
+description:    "Shows the highest spending customers"
+dataSourceName: "shopp"
+queryName:      "top_k_customers"

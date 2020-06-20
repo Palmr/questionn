@@ -73,12 +73,17 @@ public final class AnswerService
         });
     }
 
-    public Promise<AnswerResult> executeAnswer(final String answerName)
+    public Promise<AnswerResult> executeAnswer(
+            final String answerName,
+            final Map<String, Object> parameters)
     {
         return new DefaultPromise<>(downstream -> {
             final Answer answer = this.answers.get(answerName);
 
-            QueryResult r = queryService.runQuery(answer.queryName, jdbiService.jdbi(answer.dataSourceName));
+            QueryResult r = queryService.runQuery(
+                    answer.queryName,
+                    parameters,
+                    jdbiService.jdbi(answer.dataSourceName));
             AnswerResult ar = new AnswerResult(r.metadataRow, r.dataRows);
 
             downstream.accept(Result.success(ar));

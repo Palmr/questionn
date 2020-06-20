@@ -50,12 +50,19 @@ public final class QueryService
                 .add(new GetAllAnswersHandler());
     }
 
-    public QueryResult runQuery(final String queryName, final Jdbi jdbi) throws Exception
+    public QueryResult runQuery(
+            final String queryName,
+            final Map<String, Object> parameters,
+            final Jdbi jdbi)
+            throws Exception
     {
         Query query = queries.get(queryName);
 
         return jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, (HandleCallback<QueryResult, Exception>)handle -> {
-            org.jdbi.v3.core.statement.Query q = handle.createQuery(query.queryText);
+            org.jdbi.v3.core.statement.Query q =
+                    handle.createQuery(query.queryText);
+            parameters.forEach(q::bind);
+
             return q.execute((statementSupplier, ctx) -> {
                 ResultSet resultSet = statementSupplier.get().executeQuery();
 
