@@ -1,23 +1,31 @@
 package org.example.questionn.csv;
 
+import java.util.Collections;
+
+import org.reactivestreams.Publisher;
+
+
+import ratpack.stream.Streams;
+
+import static java.util.Arrays.asList;
+
 public interface Csv
 {
     String[] fieldNames();
+
     Iterable<String[]> records();
 
-    default String toCsv()
+    default Publisher<String> toStreamingCsv()
     {
-        // Deliberately unescaped so far.
-        // A proper csv implementation should: a.) stream and b.) escape appropriately
-        final StringBuilder stringBuilder = new StringBuilder();
+        Publisher<String> headerPublisher = Streams.publish(Collections.singletonList(csvRowUnsafely(fieldNames())));
+        Publisher<String> recordPublisher = Streams.publish(records()).map(this::csvRowUnsafely);
 
-        stringBuilder.append(String.join(",", fieldNames()));
-        for (String[] record : records())
-        {
-            stringBuilder.append('\n');
-            stringBuilder.append(String.join(",", record));
-        }
+        return Streams.concat(asList(headerPublisher, recordPublisher));
+    }
 
-        return stringBuilder.toString();
+    // TODO - Add some CSV safety, i.e. escaping
+    default String csvRowUnsafely(String[] strings)
+    {
+        return String.join(",", strings).concat("\n");
     }
 }
