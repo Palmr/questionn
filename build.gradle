@@ -47,7 +47,13 @@ dependencies {
     testImplementation 'com.github.spotbugs:spotbugs-annotations:4.0.4'
 }
 
-mainClassName = 'org.example.questionn.QuestionnMain'
+application {
+    mainClassName = 'org.example.questionn.QuestionnMain'
+    run {
+        args = ['-c', file("$projectDir/server_configuration.yaml")]
+    }
+}
+
 
 flyway {
     url = 'jdbc:h2:file:/tmp/questionn;mode=mysql'
