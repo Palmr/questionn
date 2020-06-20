@@ -4,7 +4,7 @@ plugins {
     id 'checkstyle'
     id 'io.ratpack.ratpack-java' version '1.8.0'
     id 'org.flywaydb.flyway' version '6.4.3'
-    id 'com.github.spotbugs' version '4.3.0'
+    id 'com.github.spotbugs' version '4.4.1'
     id 'org.checkerframework' version '0.5.4'
 }
 
