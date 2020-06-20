@@ -15,6 +15,7 @@ import org.example.questionn.queries.QueryService;
 import org.example.questionn.yaml.YamlLoader;
 
 
+import ratpack.exec.Blocking;
 import ratpack.exec.Promise;
 import ratpack.exec.Result;
 import ratpack.exec.internal.DefaultPromise;
@@ -26,7 +27,7 @@ public final class AnswerService
     private final QueryService queryService;
     private final JdbiService jdbiService;
 
-    private AnswerService(
+    AnswerService(
             final Map<String, Answer> answers,
             final QueryService queryService,
             final JdbiService jdbiService)
@@ -77,16 +78,13 @@ public final class AnswerService
             final String answerName,
             final Map<String, Object> parameters)
     {
-        return new DefaultPromise<>(downstream -> {
-            final Answer answer = this.answers.get(answerName);
-
+        final Answer answer = this.answers.get(answerName);
+        return Blocking.get(() -> {
             QueryResult r = queryService.runQuery(
                     answer.queryName,
                     parameters,
                     jdbiService.jdbi(answer.dataSourceName));
-            AnswerResult ar = new AnswerResult(r.metadataRow, r.dataRows);
-
-            downstream.accept(Result.success(ar));
+            return new AnswerResult(r.metadataRow, r.dataRows);
         });
     }
 }
