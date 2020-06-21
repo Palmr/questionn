@@ -10,7 +10,7 @@ import org.jdbi.v3.core.Jdbi;
 
 import ratpack.service.Service;
 
-public class JdbiService implements Service
+public class JdbiService implements Service, JdbiSource
 {
     private final Map<String, DatabaseConfig> databasesForQuery;
     private final Map<String, Jdbi> jdbis = new ConcurrentHashMap<>();
@@ -20,6 +20,7 @@ public class JdbiService implements Service
         this.databasesForQuery = databasesForQuery;
     }
 
+    @Override
     public Jdbi jdbi(String dataSourceName)
     {
         return jdbis.computeIfAbsent(dataSourceName, k -> {

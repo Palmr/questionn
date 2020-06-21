@@ -13,19 +13,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.example.questionn.answers.GetAllAnswersHandler;
+import org.example.questionn.http.NotFound;
 import org.example.questionn.yaml.YamlLoader;
 import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel;
 
 
+import ratpack.exec.Promise;
+import ratpack.exec.Result;
+import ratpack.exec.internal.DefaultPromise;
 import ratpack.registry.RegistrySpec;
 
 public final class QueryService
 {
     private final Map<String, Query> queries;
 
-    private QueryService(Map<String, Query> queries)
+    public QueryService(Map<String, Query> queries)
     {
         this.queries = queries;
     }
@@ -50,24 +54,31 @@ public final class QueryService
                 .add(new GetAllAnswersHandler());
     }
 
-    public QueryResult runQuery(
+    public Promise<QueryResult> runQuery(
             final String queryName,
             final Map<String, Object> parameters,
             final Jdbi jdbi)
-            throws Exception
     {
-        Query query = queries.get(queryName);
+        return new DefaultPromise<>(downstream -> {
+            Query query = queries.get(queryName);
+            if (query == null)
+            {
+                downstream.error(new NotFound("Query not found: " + queryName));
+            }
+            else
+            {
+                downstream.accept(Result.success(jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, (HandleCallback<QueryResult, Exception>)handle -> {
+                    org.jdbi.v3.core.statement.Query q =
+                            handle.createQuery(query.queryText);
+                    parameters.forEach(q::bind);
 
-        return jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, (HandleCallback<QueryResult, Exception>)handle -> {
-            org.jdbi.v3.core.statement.Query q =
-                    handle.createQuery(query.queryText);
-            parameters.forEach(q::bind);
+                    return q.execute((statementSupplier, ctx) -> {
+                        ResultSet resultSet = statementSupplier.get().executeQuery();
 
-            return q.execute((statementSupplier, ctx) -> {
-                ResultSet resultSet = statementSupplier.get().executeQuery();
-
-                return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
-            });
+                        return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
+                    });
+                })));
+            }
         });
     }
 

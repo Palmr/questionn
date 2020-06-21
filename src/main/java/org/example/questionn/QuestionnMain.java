@@ -16,6 +16,7 @@ import org.example.questionn.answers.GetAllAnswersHandler;
 import org.example.questionn.csv.CsvRenderer;
 import org.example.questionn.db.DatabaseMigrationService;
 import org.example.questionn.db.SimpleConfiguredH2DataSourceModule;
+import org.example.questionn.http.NotFound;
 import org.example.questionn.queries.QueryService;
 import org.example.questionn.testing.CreateTestingDbHandler;
 import org.example.questionn.testing.GetAllTestingDbHandler;
@@ -30,7 +31,9 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 
+import ratpack.error.ServerErrorHandler;
 import ratpack.guice.Guice;
+import ratpack.handling.Context;
 import ratpack.handling.RequestLogger;
 import ratpack.http.MutableHeaders;
 import ratpack.server.BaseDir;
@@ -71,8 +74,8 @@ public class QuestionnMain
     {
         final Path baseDir = Paths.get(serverConfiguration.configurationPath);
         final QueryService queryService = QueryService.load(baseDir, yamlLoader);
-        final JdbiService jdbiService = new JdbiService(serverConfiguration.databasesForQuery);
-        final AnswerService answerService = AnswerService.load(baseDir, yamlLoader, queryService, jdbiService);
+        final JdbiSource jdbiSource = new JdbiService(serverConfiguration.databasesForQuery);
+        final AnswerService answerService = AnswerService.load(baseDir, yamlLoader, queryService, jdbiSource);
 
         return RatpackServer.start(server -> server
                 .serverConfig(c -> c
@@ -81,6 +84,7 @@ public class QuestionnMain
                     .development(serverConfiguration.ratpackConfiguration.isDevelopment)
                 )
                 .registry(Guice.registry(b -> b
+                    .bind(ServerErrorHandler.class, CustomServerErrorHandler.class)
                     .module(new SimpleConfiguredH2DataSourceModule(serverConfiguration.questionnDatabase))
                     .add(new CsvRenderer())
                     .add(new DatabaseMigrationService())
@@ -126,4 +130,24 @@ public class QuestionnMain
         );
     }
 
+    private static class CustomServerErrorHandler implements ServerErrorHandler
+    {
+        @Override
+        public void error(final Context context, final Throwable throwable)
+        {
+            try
+            {
+                // If only...if only they had not required the 'error' half of Promise to be exceptional...
+                throw throwable;
+            }
+            catch (NotFound nf)
+            {
+                context.getResponse().status(404).send(nf.getMessage());
+            }
+            catch (Throwable t)
+            {
+                context.getResponse().status(500).send();
+            }
+        }
+    }
 }

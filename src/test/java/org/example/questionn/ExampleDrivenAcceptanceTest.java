@@ -12,6 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 
 import okhttp3.MediaType;
@@ -58,6 +59,21 @@ public class ExampleDrivenAcceptanceTest
     {
         String result = post("http://localhost:8081/api/answers/sales_total_by_customer");
         assertThat(result, containsString("\"Alice Brown\",\"5.34\""));
+    }
+
+    @Test
+    public void requestNonExistentAnswer() throws IOException
+    {
+        final Request.Builder post = new Request.Builder()
+                .url("http://localhost:8081/api/answers/moose")
+                .post(RequestBody.create("{}", JSON));
+        final Request request = post.build();
+        try (Response response = client.newCall(request).execute())
+        {
+            String result = Objects.requireNonNull(response.body()).string();
+            assertThat(result, containsString("Answer not found: moose"));
+            assertThat(response.code(), equalTo(404));
+        }
     }
 
     @Test
