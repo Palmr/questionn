@@ -50,14 +50,14 @@ public class ExampleDrivenAcceptanceTest
     @Test
     public void queryTotalSales() throws IOException
     {
-        String result = post("http://localhost:8081/api/answers/sales_total");
+        String result = post("http://localhost:5050/api/answers/sales_total");
         assertThat(result, containsString("12.72"));
     }
 
     @Test
     public void queryTotalSalesByCustomer() throws IOException
     {
-        String result = post("http://localhost:8081/api/answers/sales_total_by_customer");
+        String result = post("http://localhost:5050/api/answers/sales_total_by_customer");
         assertThat(result, containsString("\"Alice Brown\",\"5.34\""));
     }
 
@@ -65,7 +65,7 @@ public class ExampleDrivenAcceptanceTest
     public void requestNonExistentAnswer() throws IOException
     {
         final Request.Builder post = new Request.Builder()
-                .url("http://localhost:8081/api/answers/moose")
+                .url("http://localhost:5050/api/answers/moose")
                 .post(RequestBody.create("{}", JSON));
         final Request request = post.build();
         try (Response response = client.newCall(request).execute())
@@ -79,7 +79,7 @@ public class ExampleDrivenAcceptanceTest
     @Test
     public void queryTotalSalesByCustomerAsCsv() throws IOException
     {
-        String result = post("http://localhost:8081/api/answers/sales_total_by_customer",
+        String result = post("http://localhost:5050/api/answers/sales_total_by_customer",
                 r -> r.header("Accept", "text/csv"), "{}");
         assertThat(result, containsString(
                 "CUSTOMER_NAME,SALES_TOTAL\n" +
@@ -92,7 +92,7 @@ public class ExampleDrivenAcceptanceTest
     @Test
     public void queryTopCustomers() throws IOException
     {
-        String result = post("http://localhost:8081/api/answers/top_k_customers",
+        String result = post("http://localhost:5050/api/answers/top_k_customers",
                 r -> r.header("Accept", "text/csv"), "{ \"limit\": 2 }");
         assertThat(result, containsString(
                 "CUSTOMER_NAME,SALES_TOTAL\n" +

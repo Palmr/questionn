@@ -23,6 +23,10 @@ import ratpack.server.RatpackServer;
 
 public class ExampleDrivenMain
 {
+
+    public static final int RATPACK_PORT = 5050;
+    public static final String H2_DATABASE_PORT = "8082";
+
     public static void main(String... args) throws Exception
     {
         ArgumentParser parser = ArgumentParsers
@@ -88,7 +92,7 @@ public class ExampleDrivenMain
             final String exampleDirectoryName) throws Exception
     {
         final Server server = Server.createTcpServer(
-                "-tcpPort", "8080",
+                "-tcpPort", H2_DATABASE_PORT,
                 "-tcpAllowOthers",
                 "-baseDir", databaseRootPath).start();
 
@@ -119,7 +123,7 @@ public class ExampleDrivenMain
 
         RatpackConfiguration ratpackConfiguration = new RatpackConfiguration();
         ratpackConfiguration.isDevelopment = true;
-        ratpackConfiguration.port = 8081;
+        ratpackConfiguration.port = RATPACK_PORT;
 
         serverConfiguration.configurationPath = exampleDirectory.getAbsolutePath();
         serverConfiguration.questionnDatabase = questionnDatabase;
