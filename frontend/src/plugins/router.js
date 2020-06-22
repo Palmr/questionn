@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router'
-import Answers from "../components/Answers";
-import Dashboards from "../components/Dashboards";
-import Settings from "../components/Settings";
-import Debug from "../components/Debug";
+import VueRouter from 'vue-router';
+import Answers from '../components/Answers';
+import Dashboards from '../components/Dashboards';
+import Settings from '../components/Settings';
+import Debug from '../components/Debug';
 
 Vue.use(VueRouter);
 
