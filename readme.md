@@ -21,7 +21,9 @@ If "doing it right" we should probably have a little more testing on the go than
  - [ ] Get runnable answers again
    - [x] First answer acceptance test
    - [x] Answers with different result shapes
-   - [ ] Answers with query parameters
+   - [x] Answers with query parameters
+     - [] of different types
+     - [] and different optionality 
    - [ ] Work out if answers are really distinct from queries
    - [ ] Can we avoid having the entire ResultSet in memory?
    - [ ] Can we avoid having the entire response text in memory?
