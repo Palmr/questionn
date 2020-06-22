@@ -15,14 +15,12 @@ import java.util.Map;
 import org.example.questionn.answers.GetAllAnswersHandler;
 import org.example.questionn.http.NotFound;
 import org.example.questionn.yaml.YamlLoader;
-import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel;
 
 
+import ratpack.exec.Blocking;
 import ratpack.exec.Promise;
-import ratpack.exec.Result;
-import ratpack.exec.internal.DefaultPromise;
 import ratpack.registry.RegistrySpec;
 
 public final class QueryService
@@ -59,27 +57,22 @@ public final class QueryService
             final Map<String, Object> parameters,
             final Jdbi jdbi)
     {
-        return new DefaultPromise<>(downstream -> {
-            Query query = queries.get(queryName);
-            if (query == null)
-            {
-                downstream.error(new NotFound("Query not found: " + queryName));
-            }
-            else
-            {
-                downstream.accept(Result.success(jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, (HandleCallback<QueryResult, Exception>)handle -> {
-                    org.jdbi.v3.core.statement.Query q =
-                            handle.createQuery(query.queryText);
-                    parameters.forEach(q::bind);
+        final Query query = queries.get(queryName);
+        if (query == null)
+        {
+            return Promise.error(new NotFound("Query not found: " + queryName));
+        }
 
-                    return q.execute((statementSupplier, ctx) -> {
-                        ResultSet resultSet = statementSupplier.get().executeQuery();
+        return Blocking.get(() -> jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, handle -> {
+            final org.jdbi.v3.core.statement.Query q = handle.createQuery(query.queryText);
+            parameters.forEach(q::bind);
 
-                        return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
-                    });
-                })));
-            }
-        });
+            return q.execute((statementSupplier, ctx) -> {
+                final ResultSet resultSet = statementSupplier.get().executeQuery();
+
+                return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
+            });
+        }));
     }
 
     private List<DataRow> dataRows(ResultSet resultSet) throws SQLException

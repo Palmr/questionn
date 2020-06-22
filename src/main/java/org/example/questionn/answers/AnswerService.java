@@ -77,26 +77,14 @@ public final class AnswerService
             final String answerName,
             final Map<String, Object> parameters)
     {
-        return lookupAnswer(answerName)
-                .flatMap(answer -> queryService.runQuery(
-                        answer.queryName,
-                        parameters,
-                        jdbiSource.jdbi(answer.dataSourceName)))
-                .map(qr -> new AnswerResult(qr.metadataRow, qr.dataRows));
-    }
+        Answer answer = answers.get(answerName);
+        if (answer == null)
+        {
+            return Promise.error(new NotFound("Answer not found: " + answerName));
+        }
 
-    private Promise<Answer> lookupAnswer(String answerName)
-    {
-        return new DefaultPromise<>(downstream -> {
-            Answer answer = answers.get(answerName);
-            if (answer == null)
-            {
-                downstream.error(new NotFound("Answer not found: " + answerName));
-            }
-            else
-            {
-                downstream.success(answer);
-            }
-        });
+        return queryService
+                .runQuery(answer.queryName, parameters, jdbiSource.jdbi(answer.dataSourceName))
+                .map(qr -> new AnswerResult(qr.metadataRow, qr.dataRows));
     }
 }
