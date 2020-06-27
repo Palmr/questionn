@@ -4,11 +4,18 @@
             <v-row dense>
                 <v-col v-for="answer in answers" :key="answer.name" cols="3">
                     <v-card>
-                        <v-card-title v-text="answer.title"></v-card-title>
+                        <v-card-title>{{ answer.title }}</v-card-title>
                         <v-card-subtitle>{{ answer.description }}</v-card-subtitle>
 
                         <v-card-actions>
-                            <v-btn text>Run</v-btn>
+                            <v-btn
+                            text
+                            link
+                            :to="'/answer/' + answer.name"
+                            color="primary"
+                            >
+                                Go
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>

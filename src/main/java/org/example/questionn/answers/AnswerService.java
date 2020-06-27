@@ -61,6 +61,7 @@ public final class AnswerService
     {
         registrySpec.add(this)
                 .add(new GetAllAnswersHandler())
+                .add(new GetAnswerHandler())
                 .add(new GetAnswerParametersHandler())
                 .add(new ExecuteAnswerHandler());
     }
@@ -71,6 +72,11 @@ public final class AnswerService
                 .map(AnswerDetail::new)
                 .sorted(Comparator.comparing(a -> a.title))
                 .collect(Collectors.toList()));
+    }
+
+    public Promise<AnswerDetail> getAnswer(String answerName)
+    {
+        return getAnswerPromise(answerName).map(AnswerDetail::new);
     }
 
     Promise<List<QueryParameter>> getAnswerParameters(final String answerName)

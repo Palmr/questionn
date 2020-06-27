@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Answer from '../components/Answer';
 import Answers from '../components/Answers';
 import Dashboards from '../components/Dashboards';
 import Settings from '../components/Settings';
@@ -9,6 +10,7 @@ Vue.use(VueRouter);
 
 const routes = [
     { path: '/answers', component: Answers },
+    { path: '/answer/:answerName', component: Answer },
     { path: '/dashboards', component: Dashboards },
     { path: '/settings', component: Settings },
     { path: '/debug', component: Debug },

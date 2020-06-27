@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.questionn.answers.AnswerService;
 import org.example.questionn.answers.ExecuteAnswerHandler;
 import org.example.questionn.answers.GetAllAnswersHandler;
+import org.example.questionn.answers.GetAnswerHandler;
 import org.example.questionn.answers.GetAnswerParametersHandler;
 import org.example.questionn.csv.CsvRenderer;
 import org.example.questionn.db.DatabaseMigrationService;
@@ -109,18 +110,20 @@ public class QuestionnMain
                                 ctx.next();
                             })
 
-                            .prefix("api", tokenChain -> tokenChain
-                                    .get("testing/db", GetAllTestingDbHandler.class)
-                                    .post("testing/db/add", CreateTestingDbHandler.class)
-                                    .get("testing/db/:entryId", GetTestingDbHandler.class)
-
-                                    .get("answers", GetAllAnswersHandler.class)
-                                    .get("answers/:answer/params", GetAnswerParametersHandler.class)
-                                    .post("answers/:answer", ExecuteAnswerHandler.class)
-//
-//                                        .get("dashboards", GetAllDashboardsHandler.class)
-//                                        .get("dashboards/:dashboard", GetDashboardHandler.class)
-//                                        .post("dashboards/:dashboard", ExecuteDashboardHandler.class)
+                            .prefix("api/testing", tokenChain -> tokenChain
+                                    .get("db", GetAllTestingDbHandler.class)
+                                    .post("db/add", CreateTestingDbHandler.class)
+                                    .get("db/:entryId", GetTestingDbHandler.class)
+                                    .notFound()
+                            )
+                            .prefix("api/answers", tokenChain -> tokenChain
+                                    .get(GetAllAnswersHandler.class)
+                                    .get(":answer/params", GetAnswerParametersHandler.class)
+                                    .path(":answer", ctx -> ctx.byMethod(m -> m
+                                            .get(GetAnswerHandler.class)
+                                            .post(ExecuteAnswerHandler.class)
+                                    ))
+                                    .notFound()
                             )
 
                             .files(f -> f.dir("web").indexFiles("index.html"))
