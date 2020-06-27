@@ -1,9 +1,19 @@
 <template>
     <div>
-        <h2>Answers</h2>
-        <li v-for="answer in answers" :key="answer.name">
-            {{ answer.name }} - {{ answer.title }}
-        </li>
+        <v-container fluid>
+            <v-row dense>
+                <v-col v-for="answer in answers" :key="answer.name" cols="3">
+                    <v-card>
+                        <v-card-title v-text="answer.title"></v-card-title>
+                        <v-card-subtitle>{{ answer.description }}</v-card-subtitle>
+
+                        <v-card-actions>
+                            <v-btn text>Run</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
@@ -18,7 +28,7 @@
         }),
         created() {
             questionnApi.getAnswers()
-                .then(answers => this.answers = answers);
+            .then(answers => this.answers = answers);
         },
     };
 </script>
