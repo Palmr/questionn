@@ -6,22 +6,22 @@ node {
     download = false
 }
 
-task run(type: YarnTask) {
-    group = 'questionn-frontend'
-    args = ['serve']
-}
-
-task lint(type: YarnTask) {
-    group = 'questionn-frontend'
-    args = ['lint']
-}
-
-task devInstall(type: YarnTask) {
+task install(type: YarnTask) {
     group = 'questionn-frontend'
     args = ['install']
 }
 
-task build(type: YarnTask, dependsOn: devInstall) {
+task run(type: YarnTask, dependsOn: install) {
+    group = 'questionn-frontend'
+    args = ['serve']
+}
+
+task lint(type: YarnTask, dependsOn: install) {
+    group = 'questionn-frontend'
+    args = ['lint']
+}
+
+task build(type: YarnTask, dependsOn: install) {
     group = 'questionn-frontend'
     args = ['build']
 }
