@@ -8,3 +8,7 @@ queryText: "
   order by sales_total desc
   limit :limit
 "
+queryParameters:
+  - name: "limit"
+    type: NUMBER
+    optional: false

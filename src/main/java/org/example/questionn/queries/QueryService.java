@@ -57,22 +57,33 @@ public final class QueryService
             final Map<String, Object> parameters,
             final Jdbi jdbi)
     {
-        final Query query = queries.get(queryName);
-        if (query == null)
+        return getQueryPromise(queryName)
+                .flatMap(query -> Blocking.get(() -> jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, handle -> {
+                    final org.jdbi.v3.core.statement.Query q = handle.createQuery(query.queryText);
+                    parameters.forEach(q::bind);
+
+                    return q.execute((statementSupplier, ctx) -> {
+                        final ResultSet resultSet = statementSupplier.get().executeQuery();
+
+                        return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
+                    });
+                })));
+    }
+
+    public Promise<List<QueryParameter>> getQueryParameters(String queryName)
+    {
+        return getQueryPromise(queryName)
+                .map(query -> query.queryParameters);
+    }
+
+    private Promise<Query> getQueryPromise(final String queryName)
+    {
+        if (!queries.containsKey(queryName))
         {
             return Promise.error(new NotFound("Query not found: " + queryName));
         }
 
-        return Blocking.get(() -> jdbi.inTransaction(TransactionIsolationLevel.REPEATABLE_READ, handle -> {
-            final org.jdbi.v3.core.statement.Query q = handle.createQuery(query.queryText);
-            parameters.forEach(q::bind);
-
-            return q.execute((statementSupplier, ctx) -> {
-                final ResultSet resultSet = statementSupplier.get().executeQuery();
-
-                return new QueryResult(metadataRow(resultSet.getMetaData()), dataRows(resultSet));
-            });
-        }));
+        return Promise.sync(() -> queries.get(queryName));
     }
 
     private List<DataRow> dataRows(ResultSet resultSet) throws SQLException
@@ -95,7 +106,7 @@ public final class QueryService
 
         for (int i = 0; i < columnCount; i++)
         {
-            values[i]  = resultSet.getString(i + 1);
+            values[i] = resultSet.getString(i + 1);
         }
 
         return new DataRow(values);

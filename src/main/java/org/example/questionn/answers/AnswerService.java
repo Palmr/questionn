@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.example.questionn.JdbiSource;
 import org.example.questionn.http.NotFound;
+import org.example.questionn.queries.QueryParameter;
 import org.example.questionn.queries.QueryService;
 import org.example.questionn.yaml.YamlLoader;
 
@@ -60,6 +61,7 @@ public final class AnswerService
     {
         registrySpec.add(this)
                 .add(new GetAllAnswersHandler())
+                .add(new GetAnswerParametersHandler())
                 .add(new ExecuteAnswerHandler());
     }
 
@@ -71,18 +73,29 @@ public final class AnswerService
                 .collect(Collectors.toList()));
     }
 
+    Promise<List<QueryParameter>> getAnswerParameters(final String answerName)
+    {
+        return getAnswerPromise(answerName)
+                .flatMap(answer -> queryService.getQueryParameters(answer.queryName));
+    }
+
     public Promise<AnswerResult> executeAnswer(
             final String answerName,
             final Map<String, Object> parameters)
     {
-        Answer answer = answers.get(answerName);
-        if (answer == null)
+        return getAnswerPromise(answerName)
+                .flatMap(answer -> queryService
+                        .runQuery(answer.queryName, parameters, jdbiSource.jdbi(answer.dataSourceName))
+                        .map(qr -> new AnswerResult(qr.metadataRow, qr.dataRows)));
+    }
+
+    private Promise<Answer> getAnswerPromise(final String answerName)
+    {
+        if (!answers.containsKey(answerName))
         {
             return Promise.error(new NotFound("Answer not found: " + answerName));
         }
 
-        return queryService
-                .runQuery(answer.queryName, parameters, jdbiSource.jdbi(answer.dataSourceName))
-                .map(qr -> new AnswerResult(qr.metadataRow, qr.dataRows));
+        return Promise.sync(() -> answers.get(answerName));
     }
 }

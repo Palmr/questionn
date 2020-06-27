@@ -4,7 +4,7 @@ public final class QueryParameter
 {
     public String name;
     public String displayName;
-    public String type;
+    public QueryParameterType type;
     public String generator;
     public boolean optional;
 

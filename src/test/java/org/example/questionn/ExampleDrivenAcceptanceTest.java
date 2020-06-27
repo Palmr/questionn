@@ -90,6 +90,13 @@ public class ExampleDrivenAcceptanceTest
     }
 
     @Test
+    public void queryTopKAnswerParams() throws IOException
+    {
+        String result = get("http://localhost:5050/api/answers/top_k_customers/params");
+        assertThat(result, containsString("[{\"name\":\"limit\",\"type\":\"NUMBER\",\"optional\":false}]"));
+    }
+
+    @Test
     public void queryTopCustomers() throws IOException
     {
         String result = post("http://localhost:5050/api/answers/top_k_customers",
@@ -116,6 +123,18 @@ public class ExampleDrivenAcceptanceTest
                 .url(url)
                 .post(RequestBody.create(body, JSON));
         final Request request = decorator.apply(post).build();
+        try (Response response = client.newCall(request).execute())
+        {
+            return Objects.requireNonNull(response.body()).string();
+        }
+    }
+
+    String get(String url) throws IOException
+    {
+        final Request.Builder get = new Request.Builder()
+                .url(url)
+                .get();
+        final Request request = get.build();
         try (Response response = client.newCall(request).execute())
         {
             return Objects.requireNonNull(response.body()).string();

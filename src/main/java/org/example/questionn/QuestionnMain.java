@@ -9,10 +9,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-
 import org.example.questionn.answers.AnswerService;
 import org.example.questionn.answers.ExecuteAnswerHandler;
 import org.example.questionn.answers.GetAllAnswersHandler;
+import org.example.questionn.answers.GetAnswerParametersHandler;
 import org.example.questionn.csv.CsvRenderer;
 import org.example.questionn.db.DatabaseMigrationService;
 import org.example.questionn.db.SimpleConfiguredH2DataSourceModule;
@@ -29,8 +29,6 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-
-
 import ratpack.error.ServerErrorHandler;
 import ratpack.guice.Guice;
 import ratpack.handling.Context;
@@ -117,7 +115,7 @@ public class QuestionnMain
                                     .get("testing/db/:entryId", GetTestingDbHandler.class)
 
                                     .get("answers", GetAllAnswersHandler.class)
-//                                        .get("answers/:answer", GetAnswerHandler.class)
+                                    .get("answers/:answer/params", GetAnswerParametersHandler.class)
                                     .post("answers/:answer", ExecuteAnswerHandler.class)
 //
 //                                        .get("dashboards", GetAllDashboardsHandler.class)
