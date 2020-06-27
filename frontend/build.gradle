@@ -16,7 +16,12 @@ task lint(type: YarnTask) {
     args = ['lint']
 }
 
-task build(type: YarnTask) {
+task devInstall(type: YarnTask) {
+    group = 'questionn-frontend'
+    args = ['install']
+}
+
+task build(type: YarnTask, dependsOn: devInstall) {
     group = 'questionn-frontend'
     args = ['build']
 }
