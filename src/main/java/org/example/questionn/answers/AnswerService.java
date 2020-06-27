@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +18,6 @@ import org.example.questionn.yaml.YamlLoader;
 
 
 import ratpack.exec.Promise;
-import ratpack.exec.Result;
-import ratpack.exec.internal.DefaultPromise;
 import ratpack.registry.RegistrySpec;
 
 public final class AnswerService
@@ -65,12 +65,10 @@ public final class AnswerService
 
     Promise<List<AnswerDetail>> getAllAnswers()
     {
-        return new DefaultPromise<>(downstream -> {
-            final List<AnswerDetail> allAnswers = answers.values().stream()
-                    .map(AnswerDetail::new)
-                    .collect(Collectors.toList());
-            downstream.accept(Result.success(allAnswers));
-        });
+        return Promise.sync(() -> new ArrayList<>(answers.values()).stream()
+                .map(AnswerDetail::new)
+                .sorted(Comparator.comparing(a -> a.title))
+                .collect(Collectors.toList()));
     }
 
     public Promise<AnswerResult> executeAnswer(
