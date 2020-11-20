@@ -1,4 +1,4 @@
-# Questionn [![Build Status](https://travis-ci.org/Palmr/questionn.svg?branch=master)](https://travis-ci.org/Palmr/questionn)
+# Questionn ![CodeQL](https://github.com/Palmr/questionn/workflows/CodeQL/badge.svg) ![Java CI with Gradle](https://github.com/Palmr/questionn/workflows/Java%20CI%20with%20Gradle/badge.svg)
 
 The n stands for knowledge
 
